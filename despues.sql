@@ -1,0 +1,14 @@
+DECLARE @FECHA_DESDE DATE = '2026-10-01';
+
+SELECT
+    OT.ID_OT,
+    OT.ID_ZONA,
+    OT.FECHA_CREACION
+FROM dbo.ordenes_trabajo_facts AS OT WITH (NOLOCK)
+WHERE OT.FECHA_CREACION >= @FECHA_DESDE
+  AND EXISTS (
+      SELECT 1
+      FROM dbo.estados_ot_facts AS E WITH (NOLOCK)
+      WHERE E.ID_OT = OT.ID_OT
+        AND E.ESTADO = 'REPROGRAMADA'
+  );
